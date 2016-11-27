@@ -1,2 +1,5 @@
+pep8==1.7.0
 py3dns==3.1.0
+python-http-client==2.2.1
+sendgrid==3.6.3
 validate-email==1.3
