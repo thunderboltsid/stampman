@@ -4,7 +4,7 @@ import json
 import validate_email
 
 
-def _validate_email(email_address: str, verify: bool = False):
+def _validate_email(email_address: str, verify: bool = False) -> bool:
     """Wraps validate_email with some extra validaton."""
 
     # No E-mail address can be shorter than 6 characters unless root zone

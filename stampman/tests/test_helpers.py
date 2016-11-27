@@ -1,7 +1,7 @@
 import unittest
 import json
 
-from stampman.helpers import mail
+from stampman.helpers import mail, config
 
 
 class TestEmail(unittest.TestCase):
@@ -103,3 +103,18 @@ class TestEmail(unittest.TestCase):
             "reply_to": _message._reply_to
         }
         self.assertEqual(json.dumps(expected_output_dict), str(_message))
+
+
+class ConfigTest(unittest.TestCase):
+    """Tests for the ServiceConfig helper namedtuple"""
+
+    def setUp(self):
+        self._valid_string = "this_is_an_api_key"
+        self._valid_domain = "mail.sshukla.de"
+
+    def test_config_creation(self):
+        _config = config.ServiceConfig(api_key=self._valid_string, priority=1,
+                                       domain=self._valid_domain)
+        self.assertEqual(self._valid_string, _config.api_key)
+        self.assertEqual(1, _config.priority)
+        self.assertEqual(self._valid_domain, _config.domain)
