@@ -32,3 +32,7 @@ class GenericEmailServiceException(BaseServiceException):
         return "{}: {}".format("Error with routing E-mail",
                                super(GenericEmailServiceException,
                                      self).__str__())
+
+
+class JSONMarshallingError(Exception):
+    pass
