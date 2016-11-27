@@ -90,3 +90,6 @@ ENV/
 
 # Jetbrains IDEs
 .idea/
+
+# Config file
+config.json
