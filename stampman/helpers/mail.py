@@ -18,7 +18,7 @@ def _validate_email(email_address: str, verify: bool = False) -> bool:
 
     if not is_valid:
         raise AssertionError(
-                "E-Mail address is not a valid E-mail address as per RFC-2822: "
+                "E-Mail address is not a valid E-mail address as per RFC-2822:"
                 "https://www.ietf.org/rfc/rfc2822.txt")
 
     return True
@@ -27,16 +27,16 @@ def _validate_email(email_address: str, verify: bool = False) -> bool:
 class Email(object):
     """Helper Class for creating Email messages."""
 
-    def __init__(self, sender: typing.Tuple[str, str] = None,
-                 recipients: typing.List[str] = None,
-                 subject: str = None,
-                 content: str = None,
-                 cc: typing.List[str] = None,
-                 bcc: typing.List[str] = None,
-                 reply_to: str = None,
-                 verify_sender: bool = False,
-                 verify_recipients: bool = False,
-                 verify_reply_to: bool = False):
+    def __init__(self, sender: typing.Tuple[str, str]=None,
+                 recipients: typing.List[str]=None,
+                 subject: str=None,
+                 content: str=None,
+                 cc: typing.List[str]=None,
+                 bcc: typing.List[str]=None,
+                 reply_to: str=None,
+                 verify_sender: bool=False,
+                 verify_recipients: bool=False,
+                 verify_reply_to: bool=False):
 
         # Enforce the Type of sender
         if not isinstance(sender, tuple) or len(sender) < 2 or len(sender) > 2:

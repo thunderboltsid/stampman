@@ -4,7 +4,7 @@ import json
 from stampman.helpers import mail, config
 
 
-class TestEmail(unittest.TestCase):
+class EmailTest(unittest.TestCase):
     """Tests for the Email helper class"""
 
     def setUp(self):
