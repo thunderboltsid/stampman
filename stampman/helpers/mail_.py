@@ -104,6 +104,34 @@ class Email(object):
             _validate_email(reply_to, verify=verify_reply_to)
         self._reply_to = reply_to
 
+    @property
+    def sender(self):
+        return self._from_name, self._from_address
+
+    @property
+    def recipients(self):
+        return self._to
+
+    @property
+    def subject(self):
+        return self._subject
+
+    @property
+    def content(self):
+        return self._body
+
+    @property
+    def cc(self):
+        return self._cc
+
+    @property
+    def bcc(self):
+        return self._bcc
+
+    @property
+    def reply_address(self):
+        return self._reply_to
+
     def __str__(self):
         result = {
             "sender": self._from_address,
