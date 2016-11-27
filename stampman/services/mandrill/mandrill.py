@@ -1,5 +1,5 @@
 from stampman.services import base
 
 
-class Mandrill(base.BaseService):
+class Mandrill(base.AbstractEmailService):
     pass

@@ -1,5 +1,5 @@
 from stampman.services import base
 
 
-class Mailgun(base.BaseService):
+class Mailgun(base.AbstractEmailService):
     pass

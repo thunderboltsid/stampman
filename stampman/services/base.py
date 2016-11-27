@@ -1,7 +1,6 @@
 import abc
-import typing
 
-from stampman.helpers import mail
+from stampman.helpers import mail_
 
 
 class AbstractEmailService(object):
@@ -12,7 +11,7 @@ class AbstractEmailService(object):
     _config = {}
 
     @abc.abstractmethod
-    def send_email(self, email: mail.Email) -> typing.Dict:
+    def send_email(self, email: mail_.Email) -> bool:
         pass
 
     def toggle_failure(self) -> bool:

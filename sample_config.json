@@ -1,6 +1,6 @@
 {
-  "services": [
-    {
+  "domain": "mail.sshukla.de",
+  "services": {
       "sendgrid": {
         "api_key": "",
         "priority": 1,
@@ -20,8 +20,7 @@
         "api_key": "",
         "priority": 4,
         "enabled": false
-      },
-    }
-  ],
+      }
+    },
   "_comment": "Rename this file to 'config.json' and insert API keys and priority values for the services here"
 }
