@@ -7,8 +7,8 @@ from stampman.helpers import mail_, config_, exceptions
 
 
 class SendgridEmailService(base.AbstractEmailService):
-    def __init__(self, failure_mode: bool = False,
-                 config: typing.NamedTuple = None):
+    def __init__(self, config: typing.NamedTuple = None,
+                 failure_mode: bool=False):
         self._name = "Sendgrid"
         self._failure_mode = failure_mode
         if not config or isinstance(config, config_.ServiceConfig):
@@ -16,6 +16,14 @@ class SendgridEmailService(base.AbstractEmailService):
         self._sg_client = sendgrid.SendGridAPIClient(
             apikey=config.api_key)
         self._config = config
+
+    @property
+    def failure_mode(self):
+        return self._failure_mode
+
+    @property
+    def name(self):
+        return self._name
 
     def send_email(self, email: mail_.Email) -> bool:
         mail = sg_mail.Mail()

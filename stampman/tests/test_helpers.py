@@ -140,9 +140,7 @@ class ConfigTest(unittest.TestCase):
     def test_config_creation(self):
         config = config_.ServiceConfig(name=self._service,
                                        api_key=self._valid_string,
-                                       priority=1,
-                                       email_service=config_.get_email_service(
-                                           self._service))
+                                       priority=1)
         self.assertEqual(self._service, config.name)
         self.assertEqual(self._valid_string, config.api_key)
         self.assertEqual(1, config.priority)
