@@ -30,7 +30,7 @@ class PooledService(base.AbstractEmailService):
                 services = []
                 for service in pool.services:
                     services.append(get_email_service(service.name)(
-                        config=service))
+                        config=service, domain=pool.domain))
                 self._service_map[pool.api_key] = services
 
             self._admins = config_.get_admins(config_dict)

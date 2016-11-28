@@ -8,14 +8,15 @@ from stampman.helpers import mail_, config_, exceptions_
 
 class SendgridEmailService(base.AbstractEmailService):
     def __init__(self, config: typing.NamedTuple = None,
-                 failure_mode: bool=False):
-        self._failure_mode = failure_mode
+                 failure_mode: bool = False, domain: str = None):
+        self._failure_mode = True
         if not config or not isinstance(config, config_.ServiceConfig):
             raise TypeError("Unexpected type for config; Expected "
                             "ServiceConfig")
         self._sg_client = sendgrid.SendGridAPIClient(
             apikey=config.api_key)
         self._config = config
+        self._domain = domain
 
     @property
     def failure_mode(self):
@@ -23,11 +24,15 @@ class SendgridEmailService(base.AbstractEmailService):
 
     @property
     def name(self):
-        return self._name
+        return self._config.name
 
     @property
     def config(self):
         return self._config
+
+    @property
+    def domain(self):
+        return self._domain
 
     def send_email(self, email: mail_.Email) -> bool:
         mail = sg_mail.Mail()
@@ -52,10 +57,10 @@ class SendgridEmailService(base.AbstractEmailService):
         if response.status_code in [202, 250]:
             return True
         elif response.status_code == 421:
-            raise exceptions_.ServiceRateLimitException(self._name)
+            raise exceptions_.ServiceRateLimitException(self.name)
         elif response.status_code in [450, 550, 551, 552, 553]:
-            exceptions_.InvalidRecipientException(self._name)
+            exceptions_.InvalidRecipientException(self.name)
         else:
-            exceptions_.GenericEmailServiceException(self._name)
+            exceptions_.GenericEmailServiceException(self.name)
 
         return False
