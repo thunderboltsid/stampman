@@ -2,25 +2,25 @@
   "pools": [
     {
       "domain": "mail.sshukla.de",
-      "api_key": "",
+      "api_key": "INSERT_KEY_HERE",
       "services": {
         "sendgrid": {
-          "api_key": "",
+          "api_key": "INSERT_KEY_HERE",
           "priority": 1,
           "enabled": true
         },
         "mailgun": {
-          "api_key": "",
+          "api_key": "INSERT_KEY_HERE",
           "priority": 2,
           "enabled": false
         },
         "mandrill": {
-          "api_key": "",
+          "api_key": "INSERT_KEY_HERE",
           "priority": 3,
           "enabled": false
         },
         "amazon_ses": {
-          "api_key": "",
+          "api_key": "INSERT_KEY_HERE",
           "priority": 4,
           "enabled": false
         }
@@ -29,9 +29,9 @@
   ],
   "admins": [
     {
-      "name": "",
-      "api_key": ""
+      "name": "INSERT_NAME_HERE",
+      "api_key": "INSERT_KEY_HERE"
     }
   ],
-  "_comment": "Rename this file to 'config.json' and insert API keys and priority values for the services here"
+  "_comment": "Insert API keys and priority values for the services here."
 }

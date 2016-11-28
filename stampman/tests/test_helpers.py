@@ -112,26 +112,26 @@ class ConfigTest(unittest.TestCase):
     def setUp(self):
         self._valid_string = "this_is_an_api_key"
         self._valid_domain = "_mail.sshukla.de"
-        self._config_file = "sample_config.json"
+        self._config_file = "config.json"
         self._service = "sendgrid"
         self._services = {
             "sendgrid": {
-                "api_key": "",
+                "api_key": "INSERT_KEY_HERE",
                 "priority": 1,
                 "enabled": True
             },
             "mailgun": {
-                "api_key": "",
+                "api_key": "INSERT_KEY_HERE",
                 "priority": 2,
                 "enabled": True
             },
             "mandrill": {
-                "api_key": "",
+                "api_key": "INSERT_KEY_HERE",
                 "priority": 3,
                 "enabled": False
             },
             "amazon_ses": {
-                "api_key": "",
+                "api_key": "INSERT_KEY_HERE",
                 "priority": 4,
                 "enabled": False
             }
