@@ -3,7 +3,7 @@ import logging
 import typing
 
 from stampman.services import base, sendgrid, mailgun, mandrill, amazon_ses
-from stampman.helpers import mail_, config_, exceptions
+from stampman.helpers import mail_, config_, exceptions_
 
 
 def get_email_service(name: str):
@@ -24,13 +24,13 @@ class PooledService(base.AbstractEmailService):
         self._name = "Service Pool"
         self._service_map = {}
         try:
-            config_dict = config_.load_json_file("sample_config.json")
+            config_dict = config_.load_json_file("config.json")
             self._pools = config_.get_domain_pools(config_dict)
             for pool in self._pools:
                 services = []
                 for service in pool.services:
                     services.append(get_email_service(service.name)(
-                        service.api_key))
+                        config=service))
                 self._service_map[pool.api_key] = services
 
             self._admins = config_.get_admins(config_dict)
@@ -40,11 +40,19 @@ class PooledService(base.AbstractEmailService):
                 "Fatal error loading configuration file. {}".format(str(e)))
             sys.exit(1)
 
+    @property
+    def pools(self):
+        return self._pools
+
+    @property
+    def admins(self):
+        return self._admins
+
     def get_pool_from_api_key(self, key: str) -> typing.NamedTuple:
         for pool in self._pools:
             if key == pool.api_key:
                 return pool
-        raise exceptions.InvalidServiceApiKeyException(self._name)
+        raise exceptions_.InvalidServiceApiKeyException(self._name)
 
     def send_email(self, email: mail_.Email, pool_api_key: str = None):
         enabled_services = self._service_map[pool_api_key]

@@ -3,16 +3,16 @@ import typing
 import sendgrid
 from sendgrid.helpers import mail as sg_mail
 from stampman.services import base
-from stampman.helpers import mail_, config_, exceptions
+from stampman.helpers import mail_, config_, exceptions_
 
 
 class SendgridEmailService(base.AbstractEmailService):
     def __init__(self, config: typing.NamedTuple = None,
                  failure_mode: bool=False):
-        self._name = "Sendgrid"
         self._failure_mode = failure_mode
-        if not config or isinstance(config, config_.ServiceConfig):
-            raise TypeError("Unexpected type for conf; Expected ServiceConfig")
+        if not config or not isinstance(config, config_.ServiceConfig):
+            raise TypeError("Unexpected type for config; Expected "
+                            "ServiceConfig")
         self._sg_client = sendgrid.SendGridAPIClient(
             apikey=config.api_key)
         self._config = config
@@ -48,10 +48,10 @@ class SendgridEmailService(base.AbstractEmailService):
         if response.status_code in [202, 250]:
             return True
         elif response.status_code == 421:
-            raise exceptions.ServiceRateLimitException(self._name)
+            raise exceptions_.ServiceRateLimitException(self._name)
         elif response.status_code in [450, 550, 551, 552, 553]:
-            exceptions.InvalidRecipientException(self._name)
+            exceptions_.InvalidRecipientException(self._name)
         else:
-            exceptions.GenericEmailServiceException(self._name)
+            exceptions_.GenericEmailServiceException(self._name)
 
         return False

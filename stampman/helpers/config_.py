@@ -2,7 +2,7 @@ import collections
 import typing
 import json
 
-from stampman.helpers import exceptions
+from stampman.helpers import exceptions_
 
 ServiceConfig = collections.namedtuple("ServiceConfig",
                                        ["name", "api_key", "priority"])
@@ -20,7 +20,7 @@ def load_json_file(path_to_file: str) -> typing.Dict:
         with open(path_to_file, 'r') as file:
             json_obj = json.loads(file.read())
     except ValueError:
-        raise exceptions.JSONMarshallingError(
+        raise exceptions_.JSONMarshallingError(
             "Unable to load JSON file {}; Please check the syntax".format(
                 path_to_file))
 
@@ -51,4 +51,5 @@ def extract_enabled_service_config(pool: typing.Dict) -> typing.List:
             _service = ServiceConfig(name=service,
                                      api_key=config["api_key"],
                                      priority=config["priority"])
+            services.append(_service)
     return services
