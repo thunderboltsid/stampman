@@ -45,8 +45,16 @@ class PooledService(base.AbstractEmailService):
         return self._pools
 
     @property
+    def domains(self):
+        return [pool.domain for pool in self._pools]
+
+    @property
     def admins(self):
         return self._admins
+
+    @property
+    def service_map(self):
+        return self._service_map
 
     def get_pool_from_api_key(self, key: str) -> typing.NamedTuple:
         for pool in self._pools:
@@ -65,7 +73,7 @@ class PooledService(base.AbstractEmailService):
                 service.send_email(email)
                 return {"status": "success",
                         "services_fail": unsuccessful_services,
-                        "service_used": service.name}
+                        "service_used": service.config.name}
             except Exception as e:
                 logging.exception(e)
                 unsuccessful_services[service.name] = str(e)

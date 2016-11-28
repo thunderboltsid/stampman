@@ -25,6 +25,10 @@ class SendgridEmailService(base.AbstractEmailService):
     def name(self):
         return self._name
 
+    @property
+    def config(self):
+        return self._config
+
     def send_email(self, email: mail_.Email) -> bool:
         mail = sg_mail.Mail()
         personalization = sg_mail.Personalization()
@@ -33,13 +37,13 @@ class SendgridEmailService(base.AbstractEmailService):
         mail.add_content(sg_mail.Content("text/plain", email.content))
 
         for recipient in email.recipients:
-            personalization.add_to(recipient)
+            personalization.add_to(sendgrid.Email(recipient))
 
         for recipient in email.cc:
-            personalization.add_cc(recipient)
+            personalization.add_cc(sendgrid.Email(recipient))
 
         for recipient in email.bcc:
-            personalization.add_cc(recipient)
+            personalization.add_bcc(sendgrid.Email(recipient))
 
         mail.add_personalization(personalization)
         response = self._sg_client.client.mail.send.post(
