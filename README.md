@@ -2,10 +2,61 @@ Stampman
 ========
 [![Build Status](https://travis-ci.org/thunderboltsid/stampman.svg?branch=master)](https://travis-ci.org/thunderboltsid/stampman)
 
-A high level API for sending emails using multiple email service
-providers to ensure proper failover.
+Almost all businesses need to send large quantities of E-mails to their customers to keep them posted about the service offerings, policy changes, etc. Since there is a lot of complexity involved with ensuring deliverability, avoiding spam filters and blacklists, it is a common practice to use an email service provider such as [Sendgrid](), [Mailgun](), [Mandrill](), [AmazonSES](), etc. in the form of an API to delegate the complexities to the E-mail providers. What happens when the E-mail provider itself goes down?
+
+Stampman provides a high level abstraction for sending emails using multiple email service providers (AmazonSES, Mandrill, Mailgun, and Sendgrid) to ensure seamless failover designed in a way that facilitates modular addition of a new E-main provider.
+
+Architectural Musings
+---------------------
+The service comprises of four components:
+
+  - **Services**: Representing individual services (sendgrid, mailgun, etc.) that subclass `AbstractEmailService`. The two complete ones currently are `SendgridEmailService` and `MailgunEmailService`. These services are then utilized by the `PooledEmailServce` which also subclass `AbstractEmailService` and provides the interface for the REST API to communicate with. These services can be found in the `stampman.services` module.
+  - **Configuration**: The configuration is managed by a `config.json` file present in project root. The barebones file is provided in the project root and needs to be populated with API keys for individual services, the API key governing a group of services associated with a email domain, and the API key for the project admins to manage all pools. 
+  - **Helpers**: These are the constructs that are useful for doing the data wrangling and providing the necessary abstractions for the `stampman.services` module to load configurations and provide an abstraction for E-mail message.
+  - **Stampman API**: This is the python-flask server that provides a browsable API, verifies the interactions at the endpoints, takes care of data marshalling, and permission verification. This runs off of `stampman.main` module. The API provides the following endpoints:
+  
+    * `/`: List all available pools with their domains
+    * `/<domain>/` List the services and priorities of a specific domain
+    * `/<domain>/send`: Send an email using the pooled service using the increasing order of priorities in case of a failover.
+    
+Dependencies
+------------
+The codebase is written in Python with type annotations and works on all versions of Python 3.5 and above. The complete list of dependencies and versions is present in the `requirements.txt` file in project root. The libraries used to facilitate rapid development of the library are:
+
+  - Flask: For creating the web API
+  - Flask-API: For providing a browsable frontend for the API
+  - requests: For a simple mechanism to make http requests (Mailgun only has a HTTP API)
+  - python-sendgrid: Official Sendgrid library for Python for a convenient interface
 
 Testing
 -------
-For running the unit tests, execute:
+The project has unit tests for testing individual components and integration tests for testing whether the system works appropriately. A Travis instance has been setup to track the status of all the builds and test cases are being run on:
+
+  - `python3.5-dev`
+  - `python3.6-dev`
+  - `python3.7-dev`
+  
+The tests only take place on Python versions 3.5 and above because the codebase uses [type annotations (c.f. PEP 484)](https://www.python.org/dev/peps/pep-0484/) as a linting mechanism during the development to provide a better overview of the code. However, as a result, the code is not compatible with Python versions below `python3.5`.
+
+The tests can be found under the `stampman.tests` module and comprise of four files:
+   
+  - `test_helpers.py`: Testing the behaviour of the functions and classes in the `stampman.helpers` module.
+  - `test_api.py`: Testing the behaviour of the API endpoints under `stampman.main`.
+  - `test_services.py`: Testing the behaviour of the EmailService classes under `stampman.services` module.
+  - `test_sanity.py`: Tests the code cleanliness by checking whether the codebase adheres to the [style guide for python (c.f. PEP 8)](https://www.python.org/dev/peps/pep-0008/).
+
+For running the unit tests locally, execute:
 `python -m unittest discover`
+
+Security
+--------
+
+Logging
+-------
+
+Monitoring
+----------
+
+
+
+
