@@ -13,7 +13,7 @@ The service comprises of four components:
   - **Services**: Representing individual services (sendgrid, mailgun, etc.) that subclass `AbstractEmailService`. The two complete ones currently are `SendgridEmailService` and `MailgunEmailService`. These services are then utilized by the `PooledEmailServce` which also subclass `AbstractEmailService` and provides the interface for the REST API to communicate with. These services can be found in the `stampman.services` module.
   - **Configuration**: The configuration is managed by a `config.json` file present in project root. The barebones file is provided in the project root and needs to be populated with API keys for individual services, the API key governing a group of services associated with a email domain, and the API key for the project admins to manage all pools. 
   - **Helpers**: These are the constructs that are useful for doing the data wrangling and providing the necessary abstractions for the `stampman.services` module to load configurations and provide an abstraction for E-mail message.
-  - **Stampman API**: This is the python-flask server that provides a browsable API, verifies the interactions at the endpoints, takes care of data marshalling, and permission verification. This runs off of `stampman.main` module. The API provides the following endpoints:
+  - **Stampman API**: This is the python-flask server that provides a browsable API, verifies the interactions at the endpoints, takes care of data marshalling, and permission verification. This runs off of `stampman.main` module. Whether the API results in a browsable API or a JSON response is determined by the `accept` header in the request. The API provides the following endpoints:
   
     * `/`: List all available pools with their domains
     * `/<domain>/` List the services and priorities of a specific domain
@@ -53,10 +53,11 @@ Security
 
 Logging
 -------
+Basic logging is handled by the python [`logging`](https://docs.python.org/3/library/logging.html) module. The extent of logging currently is mostly limited to logging requests to all API endpoints.
 
 Monitoring
 ----------
-
+A basic monitoring script that checks the endpoints 
 
 
 

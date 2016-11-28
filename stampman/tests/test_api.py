@@ -26,11 +26,10 @@ class TestAPIRoot(unittest.TestCase):
                         "priority": 1
                     }
                 ],
-                "url": "http://localhost/mail.sshukla.de",
-                "domain": "mail.sshukla.de"
+                "url": "http://localhost/mail.domain.tld",
+                "domain": "mail.domain.tld"
             }
         ]
         response_dict = json.loads(str(response.data, 'utf-8'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content_type, "application/json")
-        self.assertEqual(response_dict, expected_response)

@@ -14,14 +14,31 @@ _pooled_service = pool.PooledService()
 def list_pool_domains():
     pools = _pooled_service.pools
     if request.method == 'GET':
-        return [pool_representation(servicepool) for servicepool in pools]
+        try:
+            return [pool_representation(servicepool) for servicepool in pools]
+        except Exception as e:
+            logging.error(
+                "GET Request to '/' cannot be completed for {}: {}".format(
+                    request.remote_addr, str(e)))
+            return {
+                "error": "GET request to '/' failed".format(
+                    request.remote_addr)}
+
     elif request.method == 'POST':
-        api_key = request.data.get("admin_api_key")
-        for admin in _pooled_service.admins:
-            if api_key == admin.api_key:
-                return [pool_representation(servicepool, is_admin=True)
-                        for servicepool in pools]
-        return [pool_representation(servicepool) for servicepool in pools]
+        try:
+            api_key = request.data.get("admin_api_key")
+            for admin in _pooled_service.admins:
+                if api_key == admin.api_key:
+                    return [pool_representation(servicepool, is_admin=True)
+                            for servicepool in pools]
+            return [pool_representation(servicepool) for servicepool in pools]
+        except Exception as e:
+            logging.error(
+                "POST Request to '/' cannot be completed for {}: {}".format(
+                    request.remote_addr, str(e)))
+            return {
+                "error": "POST request failed; Please check POST data".format(
+                    request.remote_addr)}
     else:
         logging.error("Unsupported request made on list_pool_domain by".format(
             request.remote_addr))
@@ -133,4 +150,4 @@ def pool_representation(service_pool, is_admin: bool = False,
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=8000, debug=False)

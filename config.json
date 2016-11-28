@@ -1,7 +1,7 @@
 {
   "pools": [
     {
-      "domain": "mail.sshukla.de",
+      "domain": "mail.domain.tld",
       "api_key": "INSERT_KEY_HERE",
       "services": {
         "sendgrid": {
@@ -12,7 +12,7 @@
         "mailgun": {
           "api_key": "INSERT_KEY_HERE",
           "priority": 2,
-          "enabled": false
+          "enabled": true
         },
         "mandrill": {
           "api_key": "INSERT_KEY_HERE",
