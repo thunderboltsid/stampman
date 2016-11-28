@@ -1,5 +1,8 @@
 import unittest
 
+from stampman.services import pool
 
-class SendgridEmailServiceTest(unittest.TestCase):
-    pass
+
+class PoolServiceTest(unittest.TestCase):
+    def test_creation(self):
+        pool.PooledService()

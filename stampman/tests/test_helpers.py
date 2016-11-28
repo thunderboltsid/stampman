@@ -113,7 +113,7 @@ class ConfigTest(unittest.TestCase):
         self._valid_string = "this_is_an_api_key"
         self._valid_domain = "_mail.sshukla.de"
         self._config_file = "sample_config.json"
-        self._service = "test_service"
+        self._service = "sendgrid"
         self._services = {
             "sendgrid": {
                 "api_key": "",
@@ -137,19 +137,22 @@ class ConfigTest(unittest.TestCase):
             }
         }
 
-    def test__config_creation(self):
+    def test_config_creation(self):
         config = config_.ServiceConfig(name=self._service,
                                        api_key=self._valid_string,
-                                       priority=1)
+                                       priority=1,
+                                       email_service=config_.get_email_service(
+                                           self._service))
         self.assertEqual(self._service, config.name)
         self.assertEqual(self._valid_string, config.api_key)
         self.assertEqual(1, config.priority)
 
     def test_config_load(self):
         config_dict = config_.load_json_file(self._config_file)
-        services = config_.extract_enabled_service_config(config_dict)
-        for service in services:
-            for key, value in self._services.items():
-                if key == service.name:
-                    self.assertEqual(value["api_key"], service.api_key)
-                    self.assertEqual(value["priority"], service.priority)
+        pools = config_.get_domain_pools(config_dict)
+        for pool in pools:
+            for service in pool.services:
+                for key, value in self._services.items():
+                    if key == service.name:
+                        self.assertEqual(value["api_key"], service.api_key)
+                        self.assertEqual(value["priority"], service.priority)

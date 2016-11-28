@@ -1,5 +1,5 @@
 from stampman.services import base
 
 
-class AmazonSES(base.AbstractEmailService):
+class AmazonSESEmailService(base.AbstractEmailService):
     pass
