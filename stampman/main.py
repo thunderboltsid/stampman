@@ -12,6 +12,10 @@ _pooled_service = pool.PooledService()
 
 @app.route("/", methods=['GET', 'POST'])
 def list_pool_domains():
+    """
+    GET: List all pools associated with the service.
+    POST: View further informaton when posted an "admin_api_key"
+    """
     pools = _pooled_service.pools
     if request.method == 'GET':
         try:
@@ -42,6 +46,10 @@ def list_pool_domains():
 
 @app.route("/<domain>/", methods=['GET', 'POST'])
 def detail_pool_domain(domain):
+    """
+    GET: Detail a single pool associated with a mail domain
+    POST: View further informaton when posted an "admin_api_key"
+    """
     pools = _pooled_service.pools
     if domain not in _pooled_service.domains:
         logging.error("{} requested unknown domain {}".format(
@@ -83,6 +91,27 @@ def detail_pool_domain(domain):
 
 @app.route("/<domain>/send/", methods=['GET', 'POST'])
 def send_pooled_email(domain):
+    """
+    Send an email via the Stampman PooledEmailService on the domain associate
+    with the pool.
+
+    Parameters:
+
+        - "pool_api_key" (required): API Key associated with a specific pool
+        - "from_email" (required): E-mail address of the sender
+        - "from_name" (required): Name of the sender
+        - "recipients" (required): Recipients of the E-mail (Either a list
+        of strings or a single string in case fo a single recipient)
+        - "cc" (optional): CC Recipients of the E-mail (Either a list
+        of strings or a single string in case fo a single recipient)
+        - "bcc" (optional): BCC Recipients of the E-mail (Either a list
+        of strings or a single string in case fo a single recipient)
+        - "subject" (optional): Subject of the E-mail
+        - "content" (optional): Body of the E-mail
+        - "reply_to" (optional): Reply address for the E-mail
+
+    Data must be JSON encoded.
+    """
     if request.method == 'GET':
         return {"error": "Unexpected request; Expected POST."}
     if domain not in _pooled_service.domains:
@@ -134,11 +163,14 @@ def send_pooled_email(domain):
     else:
         logging.error("{} requested unauthorized access to domain {}".format(
             request.remote_addr, domain))
-        return {"error": "Unauthorized Access"}
+        return {"error": "Unauthorized Access: Please check your API key"}
 
 
 def pool_representation(service_pool, is_admin: bool = False,
                         list_urls: bool = False):
+    """
+    Helper function for generating API docs.
+    """
     result = {"domain": service_pool.domain,
               "url": request.host_url + service_pool.domain}
     if is_admin:
