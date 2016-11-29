@@ -1,4 +1,6 @@
+blinker==1.4
 click==6.6
+contextlib2==0.5.4
 Flask==0.11.1
 Flask-API==0.6.9
 gunicorn==19.6.0
@@ -9,6 +11,7 @@ MarkupSafe==0.23
 pep8==1.7.0
 py3dns==3.1.0
 python-http-client==2.2.1
+raven==5.32.0
 requests==2.12.1
 sendgrid==3.6.3
 validate-email==1.3

@@ -49,6 +49,12 @@ The tests can be found under the `stampman.tests` module and comprise of four fi
 For running the unit tests locally, execute:
 `python -m unittest discover`
 
+Deployment
+----------
+Deployment is automated to ensure that production server is always using the latest and most up to date code. Every successful build on travis CI gets deployed on heroku at https://stampman.herokuapp.com
+
+
+
 Security
 --------
 There is no authentication strategy for users. However, a two tiered authorization strategy has been provided:

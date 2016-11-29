@@ -1,11 +1,15 @@
 import logging
+import os
 
 from flask import request
 from flask_api import FlaskAPI, status
+from raven.contrib.flask import Sentry
 from stampman.services import pool
 from stampman.helpers import mail_
 
 app = FlaskAPI(__name__)
+sentry = Sentry(app, dsn=os.environ.get('SENTRY_API_DSN'))
+
 
 _pooled_service = pool.PooledService()
 
