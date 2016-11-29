@@ -10,7 +10,6 @@ from stampman.helpers import mail_
 app = FlaskAPI(__name__)
 sentry = Sentry(app, dsn=os.environ.get('SENTRY_API_DSN'))
 
-
 _pooled_service = pool.PooledService()
 
 
@@ -27,8 +26,8 @@ def list_pool_domains():
             return [pool_representation(servicepool) for servicepool in pools]
         except Exception as e:
             logging.error(
-                "GET Request to '/' cannot be completed for {}: {}".format(
-                    request.remote_addr, str(e)))
+                    "GET Request to '/' cannot be completed for {}: {}".format(
+                            request.remote_addr, str(e)))
             return ({"error": "GET request to '/' failed"},
                     status.HTTP_400_BAD_REQUEST)
 
@@ -42,13 +41,13 @@ def list_pool_domains():
             return [pool_representation(servicepool) for servicepool in pools]
         except Exception as e:
             logging.error(
-                "POST Request to '/' cannot be completed for {}: {}".format(
-                    request.remote_addr, str(e)))
+                    "POST to '/' cannot be completed for {}: {}".format(
+                            request.remote_addr, str(e)))
             return ({"error": "POST request failed; Please check POST "
                               "data"}, status.HTTP_401_UNAUTHORIZED)
     else:
         logging.error("Unsupported request made on list_pool_domain by".format(
-            request.remote_addr))
+                request.remote_addr))
         return ({"error": "This endpoint only supports GET and POST requests"},
                 status.HTTP_400_BAD_REQUEST)
 
@@ -63,7 +62,7 @@ def detail_pool_domain(domain):
     pools = _pooled_service.pools
     if domain not in _pooled_service.domains:
         logging.error("{} requested unknown domain {}".format(
-            request.remote_addr, domain))
+                request.remote_addr, domain))
         return ({"error": "Unknown Domain '{}'".format(domain)},
                 status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
@@ -73,8 +72,8 @@ def detail_pool_domain(domain):
                     pools]
         except Exception as e:
             logging.error(
-                "GET request to '/{}' cannot be completed for {}: {}".format(
-                    domain, request.remote_addr, str(e)))
+                    "GET to '/{}' cannot be completed for {}: {}".format(
+                            domain, request.remote_addr, str(e)))
             return ({"error": "GET request to '/{}' failed".format(domain)},
                     status.HTTP_400_BAD_REQUEST)
     elif request.method == 'POST':
@@ -92,13 +91,13 @@ def detail_pool_domain(domain):
                 for servicepool in pools]
         except Exception as e:
             logging.error(
-                "POST Request to '/{}' cannot be completed for {}: {}".format(
-                    domain, request.remote_addr, str(e)))
+                    "POST to '/{}' cannot be completed for {}: {}".format(
+                            domain, request.remote_addr, str(e)))
             return ({"error": "POST request failed; Please check POST data"},
                     status.HTTP_401_UNAUTHORIZED)
     else:
         logging.error("Unsupported request made on list_pool_domain by".format(
-            request.remote_addr))
+                request.remote_addr))
         return ({"error": "This endpoint only supports GET and POST requests"},
                 status.HTTP_400_BAD_REQUEST)
 
@@ -130,12 +129,12 @@ def send_pooled_email(domain):
         return {"error": "Unexpected request; Expected POST."}
     if domain not in _pooled_service.domains:
         logging.error("{} requested unknown domain {}".format(
-            request.remote_addr, domain))
+                request.remote_addr, domain))
         return {"error": "Unknown Domain '{}'".format(domain)}
     if request.method == 'POST' and request.data.get(
             "pool_api_key") in _pooled_service.service_map.keys():
         logging.info(
-            "Attempting to send email from {}".format(request.remote_addr))
+                "Attempting to send email from {}".format(request.remote_addr))
         try:
             sender_email = request.data['from_email']
             recipients = request.data['recipients']
@@ -165,18 +164,19 @@ def send_pooled_email(domain):
 
         response = _pooled_service.send_email(mail_.Email(sender=(
             sender_name, sender_email), recipients=recipients,
-            subject=subject, content=content, cc=cc, bcc=bcc,
-            reply_to=reply_to), request.data.get('pool_api_key'))
+                subject=subject, content=content, cc=cc, bcc=bcc,
+                reply_to=reply_to), request.data.get('pool_api_key'))
         if response["status"] == "failure":
             logging.error("Unable to send E-mail")
             return {"error": "Service temporarily unavailable"}
         else:
             logging.info(
-                "Email dispatched using {}".format(response["service_used"]))
+                    "Email dispatched using {}".format(
+                            response["service_used"]))
             return response
     else:
         logging.error("{} requested unauthorized access to domain {}".format(
-            request.remote_addr, domain))
+                request.remote_addr, domain))
         return {"error": "Unauthorized Access: Please check your API key"}
 
 
@@ -187,21 +187,22 @@ def pool_representation(service_pool, is_admin: bool = False,
     """
     result = {"domain": service_pool.domain,
               "url": request.host_url + service_pool.domain}
+
     if is_admin:
         result["services"] = list(map(lambda x: {
             "name": x.name,
             "api_key": x.api_key,
             "priority": x.priority
         }, service_pool.services))
+    else:
+        result["services"] = list(map(lambda x: {
+            "name": x.name,
+            "priority": x.priority
+        }, service_pool.services))
 
     if list_urls:
         result["url_send_email"] = "{}{}/send".format(request.host_url,
                                                       service_pool.domain)
-
-    result["services"] = list(map(lambda x: {
-        "name": x.name,
-        "priority": x.priority
-    }, service_pool.services))
 
     return result
 

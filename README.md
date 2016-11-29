@@ -31,7 +31,7 @@ The codebase is written in Python with type annotations and works on all version
 
 Testing
 -------
-The project has unit tests for testing individual components and integration tests for testing whether the system works appropriately. A Travis instance has been setup to track the status of all the builds and test cases are being run on:
+The project has unit tests for testing individual components. A Travis instance has been setup to track the status of all the builds and test cases are being run on:
 
   - `python3.5-dev`
   - `python3.6-dev`
@@ -53,14 +53,16 @@ Deployment
 ----------
 Deployment is automated to ensure that production server is always using the latest and most up to date code. Every change is monitored and every time a change is made to the codebase, a build process is triggered that executes all the test cases. Every successful build on travis CI automatically gets deployed on heroku at https://stampman.herokuapp.com
 
+The app currently uses gunicorn as a http server which is easy to setup but not optimal for production use because it's a pre-forking process model and can handle only a certain number of concurrent requests. In a full-production environment, this would be run behind a buffering reverse proxy such as nginx or with async workers.
+
 Security
 --------
-There is no authentication strategy for users. However, a two tiered authorization strategy has been provided:
+There is no authentication strategy for users. However, a two-tiered authorization strategy has been provided:
 
   - `Pool Owner`: A pool owner has the pool api key and can send emails from the services in their pool.
   - `Admin`: Admins have the admin api key which can be used to get information about all the pools running on the system.
   
-The deployment server is running on https and relies on TLS to protect the data. Python libraries provide basic input sanitization.
+The deployment server is running on heroku and relies on TLS to protect the data.
 
 Logging and Error handling
 --------------------------
