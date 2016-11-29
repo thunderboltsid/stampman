@@ -1,35 +1,30 @@
 import unittest
-import json
+import os
 
-import requests
 from stampman import main
 
 
-class TestAPIRoot(unittest.TestCase):
+class TestApiList(unittest.TestCase):
     def setUp(self):
-        self._port = "8000"
-        self._path = "http://0.0.0.0"
         main.app.config['TESTING'] = True
         self._app = main.app.test_client()
+        self._pool_api_key = os.environ.get('POOL_API_KEY')
+        self._admin_ai_key = os.environ.get('ADMIN_API_KEY')
 
     def testGetJson(self):
         response = self._app.get("/")
-        expected_response = [
-            {
-                "services": [
-                    {
-                        "name": "mailgun",
-                        "priority": 2
-                    },
-                    {
-                        "name": "sendgrid",
-                        "priority": 1
-                    }
-                ],
-                "url": "http://localhost/mail.domain.tld",
-                "domain": "mail.domain.tld"
-            }
-        ]
-        response_dict = json.loads(str(response.data, 'utf-8'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content_type, "application/json")
+
+
+class TestApiDetail(unittest.TestCase):
+    def setUp(self):
+        main.app.config['TESTING'] = True
+        self._app = main.app.test_client()
+        self._pool_api_key = os.environ.get('POOL_API_KEY')
+        self._admin_ai_key = os.environ.get('ADMIN_API_KEY')
+
+    def testGetJson(self):
+        response = self._app.get("/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content_type, "application/json")

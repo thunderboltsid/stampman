@@ -44,11 +44,13 @@ class SendgridEmailService(base.AbstractEmailService):
         for recipient in email.recipients:
             personalization.add_to(sendgrid.Email(recipient))
 
-        for recipient in email.cc:
-            personalization.add_cc(sendgrid.Email(recipient))
+        if email.cc:
+            for recipient in email.cc:
+                personalization.add_cc(sendgrid.Email(recipient))
 
-        for recipient in email.bcc:
-            personalization.add_bcc(sendgrid.Email(recipient))
+        if email.bcc:
+            for recipient in email.bcc:
+                personalization.add_bcc(sendgrid.Email(recipient))
 
         mail.add_personalization(personalization)
         response = self._sg_client.client.mail.send.post(

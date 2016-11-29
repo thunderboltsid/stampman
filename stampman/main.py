@@ -1,7 +1,7 @@
 import logging
 
 from flask import request
-from flask_api import FlaskAPI
+from flask_api import FlaskAPI, status
 from stampman.services import pool
 from stampman.helpers import mail_
 
@@ -14,6 +14,7 @@ _pooled_service = pool.PooledService()
 def list_pool_domains():
     """
     GET: List all pools associated with the service.
+
     POST: View further informaton when posted an "admin_api_key"
     """
     pools = _pooled_service.pools
@@ -24,7 +25,8 @@ def list_pool_domains():
             logging.error(
                 "GET Request to '/' cannot be completed for {}: {}".format(
                     request.remote_addr, str(e)))
-            return {"error": "GET request to '/' failed"}
+            return ({"error": "GET request to '/' failed"},
+                    status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'POST':
         try:
@@ -38,23 +40,28 @@ def list_pool_domains():
             logging.error(
                 "POST Request to '/' cannot be completed for {}: {}".format(
                     request.remote_addr, str(e)))
-            return {"error": "POST request failed; Please check POST data"}
+            return ({"error": "POST request failed; Please check POST "
+                              "data"}, status.HTTP_401_UNAUTHORIZED)
     else:
         logging.error("Unsupported request made on list_pool_domain by".format(
             request.remote_addr))
+        return ({"error": "This endpoint only supports GET and POST requests"},
+                status.HTTP_400_BAD_REQUEST)
 
 
 @app.route("/<domain>/", methods=['GET', 'POST'])
 def detail_pool_domain(domain):
     """
     GET: Detail a single pool associated with a mail domain
+
     POST: View further informaton when posted an "admin_api_key"
     """
     pools = _pooled_service.pools
     if domain not in _pooled_service.domains:
         logging.error("{} requested unknown domain {}".format(
             request.remote_addr, domain))
-        return {"error": "Unknown Domain '{}'".format(domain)}
+        return ({"error": "Unknown Domain '{}'".format(domain)},
+                status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         try:
             return [pool_representation(servicepool, is_admin=False,
@@ -64,7 +71,8 @@ def detail_pool_domain(domain):
             logging.error(
                 "GET request to '/{}' cannot be completed for {}: {}".format(
                     domain, request.remote_addr, str(e)))
-            return {"error": "GET request to '/{}' failed".format(domain)}
+            return ({"error": "GET request to '/{}' failed".format(domain)},
+                    status.HTTP_400_BAD_REQUEST)
     elif request.method == 'POST':
         try:
             api_key = request.data.get("admin_api_key")
@@ -82,11 +90,13 @@ def detail_pool_domain(domain):
             logging.error(
                 "POST Request to '/{}' cannot be completed for {}: {}".format(
                     domain, request.remote_addr, str(e)))
-            return {"error": "POST request failed; Please check POST data"}
+            return ({"error": "POST request failed; Please check POST data"},
+                    status.HTTP_401_UNAUTHORIZED)
     else:
         logging.error("Unsupported request made on list_pool_domain by".format(
             request.remote_addr))
-        return {"error": "This endpoint only supports GET and POST requests"}
+        return ({"error": "This endpoint only supports GET and POST requests"},
+                status.HTTP_400_BAD_REQUEST)
 
 
 @app.route("/<domain>/send/", methods=['GET', 'POST'])
