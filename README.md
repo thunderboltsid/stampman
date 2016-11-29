@@ -51,9 +51,7 @@ For running the unit tests locally, execute:
 
 Deployment
 ----------
-Deployment is automated to ensure that production server is always using the latest and most up to date code. Every successful build on travis CI gets deployed on heroku at https://stampman.herokuapp.com
-
-
+Deployment is automated to ensure that production server is always using the latest and most up to date code. Every change is monitored and every time a change is made to the codebase, a build process is triggered that executes all the test cases. Every successful build on travis CI automatically gets deployed on heroku at https://stampman.herokuapp.com
 
 Security
 --------
@@ -72,9 +70,11 @@ Custom exception classes are placed in `stampman.helpers.exceptions` to represen
 
 Monitoring
 ----------
-Currently, there is no monitoring infrastructure. A basic monitoring script that checks the endpoints can be created to raise flags if the endpoints are not available. Furthermore, a testing system can be setup with an email ID that is not in use anywhere else to verify that the emails from the services are being delivered.
+[Sentry.io](https://sentry.io) is used for basic error monitoring and reporting. Each deployment server must set an evironment variable called "SENTRY_API_DSN" that contains the address (incl. API key) to report the errors to.
+
+For a more independent approach, a simple script that queries the endpoints from time to time would be sufficient.
 
 Links
 -----
   - [Hosted Application](https://stampman.herokuapp.com)
-  - [Resumé](http://sshukla.de/artifacts/CV_Siddharth_Shukla.pdg)
+  - [Resumé](https://github.com/thunderboltsid/CV_Siddharth_Shukla/raw/master/CV_Siddharth_Shukla.pdf)
