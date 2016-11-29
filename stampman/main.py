@@ -20,9 +20,7 @@ def list_pool_domains():
             logging.error(
                 "GET Request to '/' cannot be completed for {}: {}".format(
                     request.remote_addr, str(e)))
-            return {
-                "error": "GET request to '/' failed".format(
-                    request.remote_addr)}
+            return {"error": "GET request to '/' failed"}
 
     elif request.method == 'POST':
         try:
@@ -36,9 +34,7 @@ def list_pool_domains():
             logging.error(
                 "POST Request to '/' cannot be completed for {}: {}".format(
                     request.remote_addr, str(e)))
-            return {
-                "error": "POST request failed; Please check POST data".format(
-                    request.remote_addr)}
+            return {"error": "POST request failed; Please check POST data"}
     else:
         logging.error("Unsupported request made on list_pool_domain by".format(
             request.remote_addr))
@@ -52,22 +48,37 @@ def detail_pool_domain(domain):
             request.remote_addr, domain))
         return {"error": "Unknown Domain '{}'".format(domain)}
     if request.method == 'GET':
-        return [
-            pool_representation(servicepool, is_admin=False, list_urls=True)
-            for servicepool in pools]
+        try:
+            return [pool_representation(servicepool, is_admin=False,
+                                        list_urls=True) for servicepool in
+                    pools]
+        except Exception as e:
+            logging.error(
+                "GET request to '/{}' cannot be completed for {}: {}".format(
+                    domain, request.remote_addr, str(e)))
+            return {"error": "GET request to '/{}' failed".format(domain)}
     elif request.method == 'POST':
-        api_key = request.data.get("admin_api_key")
-        for admin in _pooled_service.admins:
-            if api_key == admin.api_key:
-                return [pool_representation(servicepool, is_admin=True,
-                                            list_urls=True) for servicepool in
-                        pools]
-        return [
-            pool_representation(servicepool, is_admin=False, list_urls=True)
-            for servicepool in pools]
+        try:
+            api_key = request.data.get("admin_api_key")
+            for admin in _pooled_service.admins:
+                if api_key == admin.api_key:
+                    return [pool_representation(servicepool, is_admin=True,
+                                                list_urls=True) for servicepool
+                            in
+                            pools]
+            return [
+                pool_representation(servicepool, is_admin=False,
+                                    list_urls=True)
+                for servicepool in pools]
+        except Exception as e:
+            logging.error(
+                "POST Request to '/{}' cannot be completed for {}: {}".format(
+                    domain, request.remote_addr, str(e)))
+            return {"error": "POST request failed; Please check POST data"}
     else:
         logging.error("Unsupported request made on list_pool_domain by".format(
             request.remote_addr))
+        return {"error": "This endpoint only supports GET and POST requests"}
 
 
 @app.route("/<domain>/send/", methods=['GET', 'POST'])
