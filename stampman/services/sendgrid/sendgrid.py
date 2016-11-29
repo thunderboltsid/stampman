@@ -9,7 +9,7 @@ from stampman.helpers import mail_, config_, exceptions_
 class SendgridEmailService(base.AbstractEmailService):
     def __init__(self, config: typing.NamedTuple = None,
                  failure_mode: bool = False, domain: str = None):
-        self._failure_mode = True
+        self._failure_mode = failure_mode
         if not config or not isinstance(config, config_.ServiceConfig):
             raise TypeError("Unexpected type for config; Expected "
                             "ServiceConfig")
